@@ -1,0 +1,1506 @@
+<!doctype html><html lang="he"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>וִי בִּיטֶה · Wie bitte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;800&family=Gentium+Plus&family=Noto+Naskh+Arabic:wght@400;600&family=Noto+Serif+Hebrew:wght@400;600&display=swap">
+<style>
+/* Layout: a listening desk. The clip archive sits at the reading edge (right),
+   the waveform strip is the hero of each clip, and the seven steps run down the page as ruled index cards.
+   Palette: Nile teal on limestone grey, with a brass accent for pronunciation notes. */
+:root{
+  --paper:#EEF1F5; --card:#FFFFFF; --ink:#151D29; --muted:#56606F; --line:#D3DAE3;
+  --glass:#1F4F86; --glass-ink:#FFFFFF; --glass-soft:#DEE8F4;
+  --amber:#8E5F07; --amber-soft:#F3E7CF;
+  --good:#2C7A4B; --mid:#9E6C0C; --bad:#AE3838;
+  --wave:#B8C5D6; --shadow:0 1px 2px rgba(21,29,41,.06),0 8px 22px rgba(21,29,41,.07);
+  --f-ui:"Assistant","Noto Sans Hebrew",system-ui,sans-serif;
+  --f-display:"Frank Ruhl Libre","Noto Serif Hebrew",Georgia,serif;
+  --f-heb:"Noto Serif Hebrew","Frank Ruhl Libre",Georgia,serif;
+  --f-ar:"Gentium Plus","Georgia",serif;
+  --f-ph:"Gentium Plus","Charis SIL","Doulos SIL","Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1219; --card:#151C26; --ink:#E4EAF2; --muted:#98A5B6; --line:#263241;
+  --glass:#8DB8EC; --glass-ink:#0D1219; --glass-soft:#1C2E45;
+  --amber:#E2B15A; --amber-soft:#352812;
+  --good:#5DC488; --mid:#E1B24F; --bad:#E57373;
+  --wave:#3C4C61; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1219; --card:#151C26; --ink:#E4EAF2; --muted:#98A5B6; --line:#263241;
+  --glass:#8DB8EC; --glass-ink:#0D1219; --glass-soft:#1C2E45;
+  --amber:#E2B15A; --amber-soft:#352812;
+  --good:#5DC488; --mid:#E1B24F; --bad:#E57373;
+  --wave:#3C4C61; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.25); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ui);font-size:16px;line-height:1.55}
+button,textarea,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--glass);outline-offset:2px;border-radius:6px}
+.app{max-width:1260px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 28px;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand h1{font-family:var(--f-display);font-weight:800;font-size:2.3rem;line-height:1;margin:0;letter-spacing:.01em}
+.brand .ar{font-family:var(--f-ar);font-size:1.6rem;color:var(--glass);line-height:1}
+.tag{color:var(--muted);margin:0;font-size:.95rem}
+.stats{display:flex;gap:18px;margin-inline-start:auto;font-variant-numeric:tabular-nums;align-items:center}
+.stat{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.stat b{font-size:1.25rem}
+.stat span{font-size:.78rem;color:var(--muted);letter-spacing:.02em}
+.btn-archive{display:none}
+
+.layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:28px;align-items:start}
+
+/* archive */
+.archive{position:sticky;top:12px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 24px)}
+.archive > *:not(.list){flex-shrink:0}
+.archive h2{font-size:.8rem;letter-spacing:.06em;color:var(--muted);margin:0;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:3px 11px;font-size:.85rem;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--glass);border-color:var(--glass);color:var(--glass-ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;padding:6px 4px;font-size:.85rem;border-inline-start:1px solid var(--line)}
+.seg button:first-child{border-inline-start:0}
+.seg button[aria-pressed="true"]{background:var(--glass-soft);color:var(--glass);font-weight:700}
+.list{list-style:none;margin:0;padding:0;overflow:auto;flex:1;min-height:200px;border-top:1px solid var(--line)}
+.list li button{width:100%;display:grid;grid-template-columns:3.2em minmax(0,1fr) auto;gap:8px;align-items:center;text-align:start;background:transparent;border:0;border-bottom:1px solid var(--line);padding:8px 6px}
+.list li button:hover{background:var(--glass-soft)}
+.list li button[aria-current="true"]{background:var(--glass-soft)}
+.list .num{font-family:var(--f-display);font-weight:800;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.list .meta{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.list .meta b{font-weight:600;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .meta span{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--line)}
+.dot.all{background:var(--good);border-color:var(--good)}
+.dot.part{background:var(--mid);border-color:var(--mid)}
+.dot.none{background:var(--bad);border-color:var(--bad)}
+.dot.seen{border-color:var(--glass)}
+.legend{display:flex;gap:12px;font-size:.75rem;color:var(--muted);flex-wrap:wrap}
+.legend span{display:inline-flex;gap:5px;align-items:center}
+
+/* desk */
+.desk{min-width:0}
+.clip-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 18px;margin-bottom:14px}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;color:var(--muted);font-weight:700;margin:0}
+.clip-head h2{font-family:var(--f-display);font-weight:800;font-size:1.9rem;line-height:1.1;margin:2px 0 0;text-wrap:balance}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-inline-start:auto}
+.badge{font-size:.8rem;border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--muted);font-variant-numeric:tabular-nums}
+.badge.msa{border-color:var(--amber);color:var(--amber)}
+.badge.r-all{border-color:var(--good);color:var(--good)}
+.badge.r-part{border-color:var(--mid);color:var(--mid)}
+.badge.r-none{border-color:var(--bad);color:var(--bad)}
+
+.player{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 16px 12px}
+.wave-wrap{position:relative}
+canvas.wave{display:block;width:100%;height:96px;touch-action:none;cursor:crosshair}
+.axis{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
+.noaudio{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:.9rem;padding:0 12px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:10px}
+.play{width:52px;height:52px;border-radius:50%;border:0;background:var(--glass);color:var(--glass-ink);display:grid;place-items:center;flex:none}
+.play:disabled{opacity:.4;cursor:not-allowed}
+.play svg{width:22px;height:22px}
+.ghost{border:1px solid var(--line);background:transparent;border-radius:9px;padding:6px 11px;font-size:.88rem}
+.ghost:disabled{opacity:.45;cursor:not-allowed}
+.ghost[aria-pressed="true"]{border-color:var(--glass);color:var(--glass);background:var(--glass-soft);font-weight:700}
+.speed{display:flex;gap:4px}
+.speed button{border:1px solid var(--line);background:transparent;border-radius:8px;padding:5px 8px;font-size:.85rem;font-variant-numeric:tabular-nums}
+.speed button[aria-pressed="true"]{border-color:var(--glass);background:var(--glass-soft);color:var(--glass);font-weight:700}
+.pinfo{margin-inline-start:auto;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:12px;flex-wrap:wrap}
+.hint{font-size:.8rem;color:var(--muted);margin:8px 0 0}
+
+/* steps */
+.steps{list-style:none;margin:22px 0 0;padding:0}
+.step{border-top:1px solid var(--line);padding-block:16px}
+.step-h{display:grid;grid-template-columns:2.6rem minmax(0,1fr) auto;gap:12px;align-items:center}
+.step-n{font-family:var(--f-display);font-weight:800;font-size:1.7rem;line-height:1;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.step.open .step-n{color:var(--glass)}
+.step.current .step-n{color:var(--glass)}
+.step-t h3{margin:0;font-size:1.08rem;font-weight:700}
+.step-t p{margin:2px 0 0;color:var(--muted);font-size:.88rem}
+.open-btn{border:1px solid var(--glass);color:var(--glass);background:transparent;border-radius:9px;padding:6px 14px;font-weight:700;font-size:.9rem;white-space:nowrap}
+.step.current .open-btn{background:var(--glass);color:var(--glass-ink)}
+.open-btn.ghosty{border-color:var(--line);color:var(--muted);font-weight:600;background:transparent}
+.step.done .step-n{color:var(--glass)}
+.step-b{margin-top:14px;padding-inline-start:calc(2.6rem + 12px);min-width:0}
+.prime{border:0;background:var(--glass);color:var(--glass-ink);border-radius:9px;padding:8px 16px;font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+textarea{width:100%;min-height:84px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:10px 12px;resize:vertical}
+.small{font-size:.84rem;color:var(--muted)}
+.tips{margin:0;padding-inline-start:1.1em;color:var(--ink)}
+.tips li{margin-bottom:4px}
+.ar-inline{font-family:var(--f-ar);font-size:1.05em}
+
+.pills{display:flex;flex-wrap:wrap;gap:8px 6px;font-family:var(--f-heb);font-size:1.35rem;line-height:1.7}
+.pill{border:0;background:transparent;padding:0 2px;border-radius:6px;font:inherit}
+.pill.hid{background:var(--glass-soft);color:transparent;min-width:2.2em;user-select:none}
+.pill.hid:hover{outline:1px dashed var(--glass)}
+.ph-line{font-family:var(--f-ph);font-size:1.12rem;direction:ltr;text-align:left;margin-top:12px;color:var(--muted);line-height:1.6}
+.ar-block{font-family:var(--f-ar);font-size:1.45rem;line-height:1.7;direction:ltr;text-align:left}
+
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.word{border:1px solid var(--line);border-radius:11px;background:var(--card);padding:9px 10px;text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center}
+.word{cursor:pointer;transition:border-color .12s}
+.word:hover{border-color:var(--glass)}
+.word[aria-pressed="true"]{border-color:var(--glass);box-shadow:inset 0 0 0 1px var(--glass);background:var(--glass-soft)}
+.morph{margin-top:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px;box-shadow:var(--shadow)}
+.mo-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 14px;margin-bottom:10px}
+.mo-ar{font-family:var(--f-ar);font-size:2rem;line-height:1.4;color:var(--glass)}
+.mo-ht{font-family:var(--f-heb);font-size:1.25rem}
+.mo-ph{font-family:var(--f-ph);font-size:1.05rem;color:var(--muted)}
+.mo-gl{color:var(--muted)}
+.mo-segs{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.mo-segs li{display:flex;flex-direction:column;align-items:center;gap:1px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;min-width:64px;max-width:210px;text-align:center;background:var(--paper)}
+.mo-segs li.stem{border-color:var(--glass);background:var(--glass-soft)}
+.mo-segs .sa{font-family:var(--f-ar);font-size:1.3rem;line-height:1.5}
+.mo-segs .sh{font-family:var(--f-heb);font-size:1rem;line-height:1.4}
+.mo-segs .sp{font-family:var(--f-ph);font-size:.85rem;color:var(--muted)}
+.mo-segs .sl{font-size:.78rem;color:var(--muted);line-height:1.35;margin-top:3px}
+.mo-segs li.stem .sl{color:var(--glass);font-weight:700}
+.mo-rows{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:5px 16px;margin:0}
+.mo-rows dt{color:var(--muted);font-size:.85rem;padding-top:3px;white-space:nowrap}
+.mo-rows dd{margin:0;font-family:"Assistant","Noto Naskh Arabic","Noto Sans Hebrew",system-ui,sans-serif}
+.mo-note{margin:12px 0 0;font-size:.93rem;max-width:72ch;text-wrap:pretty}
+[data-ai][hidden]{display:none!important}
+.fb{font-size:.82rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px;white-space:nowrap;background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
+.fb:hover{color:var(--glass)}
+.fbdlg{position:fixed;inset:0;z-index:1000;background:rgba(10,16,24,.55);display:grid;place-items:center;padding:16px}
+.fbbox{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);width:min(560px,100%);max-height:calc(100dvh - 32px);overflow:auto;padding:18px 18px 14px}
+.fbbox h2{margin:0 0 6px;font-size:1.15rem}
+.fbbox label{display:block;font-size:.85rem;color:var(--muted);margin:10px 0 4px}
+.fbbox input{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:8px 12px;font:inherit}
+.fbbox textarea{min-height:150px}
+.fbbox .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.fbbox a.prime,.fbbox a.ghost{display:inline-block;text-decoration:none;color:inherit}
+.fbbox a.prime{color:var(--glass-ink)}
+.fbbox .sel{user-select:all;-webkit-user-select:all}
+@media (max-width:520px){.mo-rows{grid-template-columns:minmax(0,1fr);gap:0}.mo-rows dd{margin-bottom:6px}}
+.word .w-ar{font-family:var(--f-ar);font-size:1.3rem;line-height:1.6}
+.word .w-ht{font-family:var(--f-heb);font-size:1.05rem}
+.word .w-gl{font-size:.9rem;color:var(--muted)}
+.word .w-f{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:3px}
+.fchip{font-size:.72rem;background:var(--amber-soft);color:var(--amber);border-radius:5px;padding:1px 6px;white-space:nowrap}
+.tipbox{margin-top:10px;border-inline-start:3px solid var(--glass);padding:8px 12px;background:var(--glass-soft);border-radius:0 8px 8px 0}
+[dir="rtl"] .tipbox{border-radius:8px 0 0 8px}
+.feat-list{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.feat-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}
+.feat-list .fchip{font-size:.8rem;padding:2px 8px}
+.gram{margin-top:16px;border-top:1px dashed var(--line);padding-top:12px}
+.gram h4{margin:0 0 6px;font-size:.85rem;letter-spacing:.04em;color:var(--muted)}
+.he-tr{font-family:var(--f-heb);font-size:1.25rem;line-height:1.75;max-width:62ch;text-wrap:pretty}
+.compare{margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.compare div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--card)}
+.compare h4{margin:0 0 4px;font-size:.8rem;color:var(--muted);letter-spacing:.04em}
+.rate{display:flex;flex-wrap:wrap;gap:8px}
+.rate button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:8px 14px;font-weight:600}
+.rate button[data-r="all"][aria-pressed="true"]{border-color:var(--good);color:var(--good)}
+.rate button[data-r="part"][aria-pressed="true"]{border-color:var(--mid);color:var(--mid)}
+.rate button[data-r="none"][aria-pressed="true"]{border-color:var(--bad);color:var(--bad)}
+.ai{margin-top:10px;white-space:pre-wrap;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--card);max-width:70ch}
+.ai.wait{color:var(--muted)}
+.empty{padding:40px 0;color:var(--muted)}
+.foot{margin-top:36px;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;max-width:80ch}
+.foot a{color:inherit}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .btn-archive{display:inline-flex}
+  .archive{position:fixed;inset:0 0 0 auto;width:min(340px,88vw);max-height:none;height:100%;background:var(--paper);z-index:20;padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) 16px;box-shadow:var(--shadow);transform:translateX(105%);transition:transform .2s ease}
+  .archive.open{transform:none}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:19}
+  .stats{margin-inline-start:0;width:100%;justify-content:space-between}
+  .step-b{padding-inline-start:0}
+  .brand h1{font-size:1.9rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---------- learner level */
+.lvlbox{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.lvl-chip{font-size:.88rem;color:var(--muted)}
+.lvl-chip b{color:var(--ink)}
+.lvl-meter{display:inline-flex;gap:3px;vertical-align:middle;margin-inline-start:6px}
+.lvl-meter i{width:10px;height:10px;border-radius:3px;background:var(--line)}
+.lvl-meter i.on{background:var(--glass)}
+.badge.lv{border-color:var(--glass);color:var(--glass)}
+.pt-prog{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 14px}
+.pt-prog i{display:block;height:100%;background:var(--glass);transition:width .3s}
+.pt-opts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.pt-opts button{text-align:start;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:10px 12px;font:inherit;color:var(--ink);line-height:1.45}
+.pt-opts button:hover:not(:disabled){border-color:var(--glass)}
+.pt-opts button.ok{border-color:#2E8B57;box-shadow:inset 0 0 0 1px #2E8B57}
+.pt-opts button.bad{border-color:#C0392B;box-shadow:inset 0 0 0 1px #C0392B}
+.pt-opts button.dk{color:var(--muted)}
+.pt-play{display:flex;align-items:center;gap:12px;margin-top:6px}
+.pt-res{font-size:1.25rem;margin:4px 0 8px}
+.app{padding-bottom:110px}
+
+/* ---------- the hoopoe */
+.hoopoe{--hp-body:#E2965A;--hp-dark:#2A221D;--hp-light:#F6F0E6;position:fixed;left:10px;bottom:8px;z-index:1001;display:flex;flex-direction:column;align-items:flex-start;pointer-events:none}
+.hoopoe>*{pointer-events:auto}
+.hp-bird{width:84px;height:78px;border:0;background:none;padding:0;cursor:pointer;filter:drop-shadow(0 2px 3px rgba(0,0,0,.18));transition:transform .25s}
+.hoopoe[data-min="1"] .hp-bird{transform:scale(.62);transform-origin:left bottom;opacity:.85}
+.hp-bird svg{width:100%;height:100%;overflow:visible}
+.hp-bubble{position:relative;margin:0 0 6px 6px;max-width:min(290px,calc(100vw - 28px));background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px 10px 30px;font-size:.92rem;line-height:1.5;direction:rtl;text-align:right}
+.hp-bubble::after{content:"";position:absolute;left:30px;bottom:-7px;width:12px;height:12px;background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+.hp-bubble[hidden]{display:none}
+.hp-x{position:absolute;left:6px;top:6px;border:0;background:none;color:var(--muted);font-size:1.1rem;line-height:1;padding:2px 5px;cursor:pointer}
+.hp-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.hp-acts button{font-size:.85rem;padding:5px 10px}
+.hp-all{animation:hpBob 3.2s ease-in-out infinite}
+.hp-eye{transform-box:fill-box;transform-origin:center;animation:hpBlink 5s infinite}
+.hp-crest{transform-box:view-box;transform-origin:80px 41px;transition:transform .35s}
+.hp-head{transform-box:view-box;transform-origin:76px 62px;transition:transform .35s}
+.hp-wing{transform-box:view-box;transform-origin:44px 72px}
+.hp-beak-lo{transform-box:view-box;transform-origin:96px 52px}
+.hp-notes,.hp-q{opacity:0;transition:opacity .3s}
+.hoopoe[data-state="listen"] .hp-crest{transform:rotate(-5deg) scale(1.16)}
+.hoopoe[data-state="listen"] .hp-head{transform:rotate(-7deg)}
+.hoopoe[data-state="listen"] .hp-notes{opacity:1}
+.hoopoe[data-state="listen"] .hp-notes path{animation:hpNote 1.4s ease-out infinite}
+.hoopoe[data-state="listen"] .hp-notes path:nth-child(2){animation-delay:.45s}
+.hoopoe[data-state="cheer"] .hp-all{animation:hpHop .8s ease-out 2}
+.hoopoe[data-state="cheer"] .hp-crest{transform:rotate(-8deg) scale(1.28)}
+.hoopoe[data-state="cheer"] .hp-wing{animation:hpWing .28s ease-in-out 5}
+.hoopoe[data-state="think"] .hp-head{transform:rotate(9deg)}
+.hoopoe[data-state="think"] .hp-q{opacity:1}
+.hoopoe[data-state="talk"] .hp-beak-lo{animation:hpTalk .22s ease-in-out 6}
+.hoopoe[data-state="talk"] .hp-crest{transform:scale(1.08)}
+@keyframes hpBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes hpBlink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.12)}}
+@keyframes hpHop{0%,100%{transform:translateY(0)}35%{transform:translateY(-13px)}60%{transform:translateY(0)}80%{transform:translateY(-5px)}}
+@keyframes hpWing{0%,100%{transform:rotate(0)}50%{transform:rotate(-16deg)}}
+@keyframes hpNote{0%{opacity:0;transform:translate(0,3px)}30%{opacity:1}100%{opacity:0;transform:translate(7px,-9px)}}
+@keyframes hpTalk{0%,100%{transform:rotate(0)}50%{transform:rotate(7deg)}}
+@media (max-width:520px){.hp-bird{width:66px;height:62px;transform-origin:left bottom}.hoopoe[data-state="idle"]:not([data-open="1"]) .hp-bird{transform:scale(.78)}.hoopoe[data-min="1"] .hp-bird{transform:scale(.55)!important}.app{padding-bottom:96px}.fbdlg{place-items:start center;padding-bottom:84px}.fbbox{max-height:calc(100dvh - 104px)}}
+@media (prefers-reduced-motion:reduce){.hoopoe *{animation:none!important}}
+</style>
+
+<div class="app" dir="rtl" lang="he">
+  <header class="top">
+    <div>
+      <div class="brand"><h1>וִי בִּיטֶה</h1><span class="ar" lang="de" dir="ltr">Wie bitte?</span></div>
+      <p class="tag">הבנת גרמנית מדוברת, קטע אחר קטע</p>
+    </div>
+    <div class="stats" id="stats" aria-live="polite"></div>
+    <div class="lvlbox" id="lvlBox"></div>
+    <button class="ghost btn-archive" id="btnArchive" type="button" aria-controls="archive" aria-expanded="false">כל הקטעים</button>
+  </header>
+
+  <div class="layout">
+    <aside class="archive" id="archive" aria-label="ארכיון הקטעים">
+      <div class="row" style="justify-content:space-between">
+        <h2>נושאים</h2>
+        <button class="ghost btn-archive" id="btnCloseArchive" type="button">סגירה</button>
+      </div>
+      <div class="chips" id="topicChips"></div>
+      <div class="seg" id="statusSeg" role="group" aria-label="סינון לפי מצב">
+        <button type="button" data-s="all" aria-pressed="true">הכול</button>
+        <button type="button" data-s="new" aria-pressed="false">חדשים</button>
+        <button type="button" data-s="review" aria-pressed="false">לחזרה</button>
+        <button type="button" data-s="done" aria-pressed="false">הבנתי</button>
+      </div>
+      <div class="legend"><span><i class="dot"></i>חדש</span><span><i class="dot seen"></i>נפתח</span><span><i class="dot all"></i>הבנתי</span><span><i class="dot part"></i>חלקית</span><span><i class="dot none"></i>לא הבנתי</span></div>
+      <ul class="list" id="clipList"></ul>
+    </aside>
+
+    <main class="desk" id="desk">
+      <p class="empty" id="loading">טוען את הקטעים...</p>
+    </main>
+  </div>
+
+  <p class="foot">הקטעים לקוחים מ־<a href="https://datacollective.mozillafoundation.org/" target="_blank" rel="noopener">Common Voice Spontaneous Speech 5.0</a> של Mozilla (גרמנית, רישיון CC0): תשובות חופשיות של מתנדבים לשאלות יומיומיות, בלי טקסט מוכן. התמלול של מתנדבי Common Voice, עם תיקוני כתיב קלים; חלק מהתמלולים עוד לא אומתו בפרויקט, וזה מצוין ליד הטקסט. התרגום לעברית, התעתיק הפונטי (IPA), התעתיק העברי, הפירוק למילים והניתוח המורפולוגי נוצרו בשביל האפליקציה הזאת: התעתיק הפונטי מבוסס על ההגייה התקנית עם בליעות נפוצות בדיבור ולא נבדק מול כל הקלטה, והניתוח נעשה בחלקו אוטומטית ונבדק ידנית. ייתכנו טעויות. <button class="fb" type="button" data-fb="general">שליחת משוב</button></p>
+  <p class="foot" style="margin-top:6px;border-top:0;padding-top:0">האתר סופר ביקורים ופעולות (למשל אילו קטעים הושמעו) בעזרת GoatCounter, בלי עוגיות ובלי שמירת פרטים מזהים, כדי לשפר את האפליקציה.</p>
+  <p class="foot more-apps" style="margin-top:6px;border-top:0;padding-top:0">עוד אפליקציות להאזנה מאותה משפחה: <a href="../isma/">אִסְמַע</a> (ערבית פלסטינית) · <a href="../eh-da/">אֵה דַה</a> (ערבית מצרית) · <a href="../chi-goft/">צִ׳י גֹפְת</a> (פרסית) · <a href="../ta-di-koi/">טָה דִי קְוָוא</a> (צרפתית) · <a href="../">כל האפליקציות</a></p>
+</div>
+
+<audio id="au" preload="auto"></audio>
+
+<script data-goatcounter="https://ilaylevi.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+/* stats */
+const GC_APP = "wie-bitte";
+const _gcQ = [], _gcSeen = new Set();
+function track(name, once) {
+  if (once) { if (_gcSeen.has(name)) return; _gcSeen.add(name); }
+  _gcQ.push(name); _gcFlush();
+}
+function _gcFlush() {
+  const g = window.goatcounter;
+  if (!g || !g.count) { if (!_gcFlush.t) _gcFlush.t = setTimeout(() => { _gcFlush.t = 0; _gcFlush(); }, 1500); return; }
+  while (_gcQ.length) {
+    const n = _gcQ.shift();
+    try { g.count({ path: GC_APP + "-" + n, title: GC_APP + " · " + n, event: true }); } catch {}
+  }
+}
+</script>
+<script>
+(() => {
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const STEPS = [
+  { t: "האזינו", d: "בלי לקרוא כלום. אפשר להאט ולסמן קטע לחזרה." },
+  { t: "מה הבנתם?", d: "כתבו בעברית כל מה שקלטתם, גם מילה אחת." },
+  { t: "תעתיק בעברית", d: "חשפו מילה אחר מילה והקשיבו שוב." },
+  { t: "הטקסט בגרמנית", d: "התמלול כפי שנכתב בגרמנית." },
+  { t: "מילה במילה", d: "פירוק לכל מילה, עם הערות הגייה." },
+  { t: "התרגום", d: "התרגום המלא, מול מה שכתבתם." },
+  { t: "סיכום", d: "האזנה אחרונה, דירוג ושאלות." },
+];
+
+const FEAT = {
+  e_drop: ["e נבלעת", "בדיבור נופלת ה־e בסוף הפועל: ich hab' = ich habe, ich koch = ich koche, würd = würde."],
+  is: ["ist ← is", "ה־t של ist נבלעת בדיבור: das is = das ist."],
+  art_short: ["ein ← 'n / ne", "ein / eine / einen מתקצרים בדיבור ל־'n, ne, nen, ner. so ein ← son."],
+  clitic: ["מילים מתחברות", "מילים קצרות נצמדות: wenn's = wenn es, ob's = ob es, drauf = darauf, dran = daran, grad = gerade, ma = mal."],
+  filler: ["מילת מילוי", "מילים שקונות זמן או מרככות: also, äh, eh, einfach, tatsächlich, so."],
+  particle: ["מילית הדגשה", "מיליות בלי תרגום ישיר שמוסיפות טון: doch (הרי, דווקא), schon (כבר, בהחלט), halt (פשוט), mal (פעם, מרכך), denn (בכלל)."],
+  slang: ["שפת דיבור", "מילים יומיומיות לא רשמיות: Bock haben (בא לי), chillig (רגוע), der Typ (הבחור), super, echt, nö / ne (לא)."],
+  loan: ["אנגלית", "מילה באנגלית בתוך הדיבור."],
+  sep: ["פועל מתפרק", "פועל עם תחילית נפרדת: התחילית עוברת לסוף המשפט. vorstellen → ich stelle mir das vor."],
+  subj_drop: ["בלי נושא", "בדיבור נושמט לפעמים הנושא בתחילת משפט: Mag am liebsten... = Ich mag am liebsten..."],
+  ig: ["‎-ig = איח", "הסיומת ‎-ig נהגית ‎-ɪç, כמו ich: wichtig = וִיחְטִיח, richtig = רִיחְטִיח."],
+};
+
+// French word notes live in the morphology panel.
+const TIPS = {};
+const normAr = (w) => String(w).toLowerCase().replace(/[.,!?;:]/g, "");
+function tipFor(ar) {
+  const w = normAr(ar.split(" ")[0]);
+  if (TIPS[w]) return TIPS[w];
+  if (w.length > 2 && w[0] === "و" && TIPS[w.slice(1)]) return TIPS[w.slice(1)];
+  return "";
+}
+
+// ---------------------------------------------------------------- state
+const S = {
+  clips: [], byId: {}, list: [], cur: null,
+  topic: "all", status: "all",
+  prog: {}, open: new Set(), exp: new Set(), reveal: 0, latin: false, voc: false,
+  sel: null, loop: false, rate: 1, dragging: null, sample: null,
+  word: null, morph: null,
+};
+const LS_KEY = "wie-bitte-progress-v1";
+const LS_LAST = "wie-bitte-last-v1";
+try { S.prog = JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch { S.prog = {}; }
+
+// optional sync to the viewer's private store
+let dbRef = null, saveTimer = null, saving = Promise.resolve();
+async function initStore() {
+  try {
+    if (!window.claude?.use) return;
+    const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!db || !user) return;
+    const uid = await user.id();
+    if (!uid) return;
+    const ref = db.doc("data/users/" + uid + "/progress");
+    const snap = await ref.get();
+    if (snap.exists) {
+      const remote = (snap.data() || {}).clips || {};
+      for (const [k, v] of Object.entries(remote)) {
+        const l = S.prog[k];
+        if (!l || (v && (v.t || 0) > (l.t || 0))) S.prog[k] = v;
+      }
+      persistLocal();
+      renderStats(); renderList();
+      if (S.cur) renderHeadBadges();
+    }
+    dbRef = ref;
+  } catch { dbRef = null; }
+}
+function persistLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(S.prog)); } catch {} }
+function persist() {
+  persistLocal();
+  if (!dbRef) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    const body = { clips: S.prog, v: 1 };
+    saving = saving.then(() => dbRef.set(body)).catch(() => {});
+  }, 1200);
+}
+function P(id) { return S.prog[id] || (S.prog[id] = {}); }
+function touch(id, patch) { Object.assign(P(id), patch, { t: Date.now() }); persist(); }
+
+// ---------------------------------------------------------------- archive
+const TOPIC_ORDER = [];
+function statusOf(id) {
+  const p = S.prog[id];
+  if (!p) return "new";
+  if (p.r === "all") return "done";
+  if (p.r === "part" || p.r === "none") return "review";
+  return p.s ? "seen" : "new";
+}
+function renderStats() {
+  const n = S.clips.length;
+  let done = 0, review = 0, seen = 0;
+  for (const c of S.clips) {
+    const s = statusOf(c.id);
+    if (s === "done") done++; else if (s === "review") review++;
+    if (s !== "new") seen++;
+  }
+  $("#stats").innerHTML =
+    `<div class="stat"><b>${done}</b><span>הבנתי</span></div>` +
+    `<div class="stat"><b>${review}</b><span>לחזרה</span></div>` +
+    `<div class="stat"><b>${n - seen}</b><span>עוד לא נפתחו</span></div>`;
+}
+function renderTopics() {
+  const box = $("#topicChips");
+  const items = [["all", "הכול"], ...TOPIC_ORDER];
+  box.innerHTML = items.map(([k, name]) => `<button type="button" class="chip" data-t="${k}" aria-pressed="${S.topic === k}">${esc(name)}</button>`).join("");
+}
+function filtered() {
+  return S.clips.filter((c) => {
+    if (S.topic !== "all" && c.topic !== S.topic) return false;
+    const st = statusOf(c.id);
+    if (S.status === "new") return st === "new" || st === "seen";
+    if (S.status === "review") return st === "review";
+    if (S.status === "done") return st === "done";
+    return true;
+  });
+}
+function dotClass(id) {
+  const p = S.prog[id];
+  if (!p) return "";
+  if (p.r) return p.r;
+  return p.s ? "seen" : "";
+}
+function renderList() {
+  S.list = filtered();
+  const ul = $("#clipList");
+  if (!S.list.length) { ul.innerHTML = `<li class="small" style="padding:12px 6px">אין קטעים בסינון הזה.</li>`; return; }
+  ul.innerHTML = S.list.map((c) =>
+    `<li><button type="button" data-id="${c.id}" aria-current="${S.cur && S.cur.id === c.id}">` +
+    `<span class="num">${c.idx}</span>` +
+    `<span class="meta"><b>${esc(c.title || c.topicName)}</b><span>${c.dur.toFixed(1)} ש׳ · ${c.gender === "F" ? "דוברת" : c.gender === "M" ? "דובר" : "דובר/ת"}${c.lv ? ` · קושי ${c.lv}` : ""}${c.audio ? "" : " · בלי שמע"}</span></span>` +
+    `<i class="dot ${dotClass(c.id)}" aria-label="${statusLabel(c.id)}"></i></button></li>`).join("");
+}
+function statusLabel(id) {
+  const p = S.prog[id];
+  if (!p) return "חדש";
+  return { all: "הבנתי", part: "הבנתי חלקית", none: "לא הבנתי" }[p.r] || (p.s ? "נפתח" : "חדש");
+}
+
+// ---------------------------------------------------------------- desk
+function renderDesk() {
+  const c = S.cur;
+  const desk = $("#desk");
+  desk.innerHTML = `
+    <div class="clip-head">
+      <div>
+        <p class="eyebrow">קטע ${c.idx} מתוך ${S.clips.length} · ${esc(c.topicName)}</p>
+        <h2>${esc(c.title || c.topicName)}</h2>
+      </div>
+      <div class="badges" id="headBadges"></div>
+      <button class="fb" type="button" data-fb="clip">דיווח על טעות בקטע</button>
+    </div>
+    <section class="player" aria-label="נגן">
+      <div class="wave-wrap">
+        <canvas class="wave" id="wave" aria-label="גל הקול. לחיצה מזיזה את הנגינה, גרירה בוחרת קטע"></canvas>
+        ${c.audio ? "" : `<div class="noaudio">השמע של הקטע הזה עוד לא חובר לאפליקציה. אפשר בינתיים לעבוד על הטקסט.</div>`}
+      </div>
+      <div class="axis" id="axis"></div>
+      <div class="controls">
+        <button class="play" id="btnPlay" type="button" aria-label="נגינה" ${c.audio ? "" : "disabled"}>${ICON_PLAY}</button>
+        <button class="ghost" id="btnBack" type="button" ${c.audio ? "" : "disabled"}>3 ש׳ אחורה</button>
+        <div class="speed" role="group" aria-label="מהירות">
+          ${[1, 0.85, 0.7, 0.5].map((r) => `<button type="button" data-rate="${r}" aria-pressed="${S.rate === r}">${r === 1 ? "1×" : r + "×"}</button>`).join("")}
+        </div>
+        <button class="ghost" id="btnLoop" type="button" aria-pressed="${S.loop}">לולאה</button>
+        <div class="pinfo"><span id="selInfo"></span><span id="listenInfo"></span></div>
+      </div>
+      <p class="hint">גררו על גל הקול כדי לבחור קטע ולחזור עליו. מקש רווח מנגן ועוצר.</p>
+    </section>
+    <ol class="steps" id="steps"></ol>`;
+  renderHeadBadges();
+  renderSteps();
+  setupWave();
+  updatePlayInfo();
+}
+function renderHeadBadges() {
+  const c = S.cur, p = S.prog[c.id] || {};
+  const r = { all: ["r-all", "דירוג קודם: הבנתי"], part: ["r-part", "דירוג קודם: חלקית"], none: ["r-none", "דירוג קודם: לא הבנתי"] }[p.r];
+  const el = $("#headBadges");
+  if (!el) return;
+  el.innerHTML =
+    `<span class="badge">${c.dur.toFixed(1)} שניות</span>` +
+    `<span class="badge">${c.gender === "F" ? "דוברת" : c.gender === "M" ? "דובר" : "דובר/ת"}</span>` +
+    `<span class="badge">${c.u.length} מילים</span>` +
+    (c.lv ? `<span class="badge lv" title="רמת הקושי של הקטע, מ-1 עד 5 (הערכה אוטומטית לפי האורך, הקצב והמילים)">קושי ${c.lv}/5</span>` : "") +
+    (c.msa ? `<span class="badge msa" title="הדובר עובר כאן לערבית ספרותית">ערבית ספרותית</span>` : "") +
+    (r ? `<span class="badge ${r[0]}">${r[1]}</span>` : "");
+}
+
+function nextClosed() { for (let i = 0; i < STEPS.length; i++) if (!S.open.has(i)) return i; return -1; }
+function renderSteps() {
+  const cur = nextClosed();
+  $("#steps").innerHTML = STEPS.map((st, i) => {
+    const open = S.exp.has(i), seen = S.open.has(i);
+    const btn = seen
+      ? `<button type="button" class="open-btn ghosty" data-toggle="${i}" aria-expanded="${open}" aria-controls="step${i}">${open ? "הסתרה" : "הצגה"}</button>`
+      : `<button type="button" class="open-btn" data-open="${i}">${i === cur ? "פתחו" : "דלגו לכאן"}</button>`;
+    return `<li class="step ${open ? "open" : ""} ${seen && !open ? "done" : ""} ${i === cur ? "current" : ""}" id="step${i}">
+      <div class="step-h">
+        <span class="step-n" aria-hidden="true">${i + 1}</span>
+        <div class="step-t"><h3>${st.t}</h3><p>${st.d}</p></div>
+        ${btn}
+      </div>
+      ${open ? `<div class="step-b">${stepBody(i)}</div>` : ""}
+    </li>`;
+  }).join("");
+  wireSteps();
+}
+function toggleStep(i) {
+  if (S.exp.has(i)) S.exp.delete(i); else S.exp.add(i);
+  renderSteps();
+  const b = document.querySelector(`[data-toggle="${i}"]`);
+  if (b) b.focus();
+}
+function openStep(i) {
+  if (!S.open.has(i)) track("step-" + (i + 1));
+  S.open.add(i);
+  S.exp = new Set([i]);
+  const p = P(S.cur.id);
+  if ((p.s || 0) < i + 1) touch(S.cur.id, { s: i + 1 });
+  renderSteps(); renderList(); renderStats();
+  const el = document.getElementById("step" + i);
+  if (el && el.getBoundingClientRect().top > window.innerHeight * 0.7) el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+}
+
+function stepBody(i) {
+  const c = S.cur, p = S.prog[c.id] || {};
+  if (i === 0) return `
+    <ul class="tips">
+      <li>האזינו פעם אחת עד הסוף, בלי לעצור.</li>
+      <li>בהאזנה השנייה האטו ל-0.7× וחפשו מילים מוכרות כמו <span class="ar-inline" lang="de">ich</span> אִיח, <span class="ar-inline" lang="de">nicht</span> נִיחְט, <span class="ar-inline" lang="de">weil</span> ווַיל, <span class="ar-inline" lang="de">also</span> אַלְזוֹ.</li>
+      <li>אם יש חלק שלא נקלט, גררו עליו על גל הקול והפעילו לולאה.</li>
+    </ul>
+    <div class="row" style="margin-top:10px"><button class="prime" type="button" data-open="1">הקשבתי, לשלב הבא</button></div>`;
+  if (i === 1) return `
+    <label class="small" for="guess">מה הבנתם? (נשמר אוטומטית)</label>
+    <textarea id="guess" placeholder="למשל: הוא שואל אותה משהו... אומרת שהיא לא רוצה...">${esc(p.g || "")}</textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="prime" type="button" data-open="2">לתעתיק</button>
+      <button class="ghost" type="button" id="btnHint" data-ai="1" hidden>רמז מ-Claude</button>
+    </div>
+    <div id="hintOut"></div>`;
+  if (i === 2) {
+    const pills = c.u.map((u, k) => {
+      const txt = u.ht || "·";
+      const hid = k >= S.reveal;
+      return `<button type="button" class="pill ${hid ? "hid" : ""}" data-pill="${k}" aria-label="${hid ? "מילה " + (k + 1) + ", מוסתרת" : esc(txt)}">${esc(hid ? " ".repeat(Math.min(Math.max(2, txt.length), 10)) : txt)}</button>`;
+    }).join("");
+    return `
+      <div class="pills" id="pills" dir="rtl">${pills}</div>
+      <div class="row" style="margin-top:12px">
+        <button class="ghost" type="button" id="btnNextWord">מילה הבאה</button>
+        <button class="ghost" type="button" id="btnAllWords">הכול</button>
+        <button class="ghost" type="button" id="btnLatin" aria-pressed="${S.latin}">תעתיק פונטי לטיני</button>
+        <button class="prime" type="button" data-open="3">לטקסט בגרמנית</button>
+      </div>
+      ${S.latin ? `<p class="ph-line" lang="de-fonipa">${esc(c.ph)}</p><p class="small">תעתיק פונטי בסימני IPA: ç = ח רכה (כמו ב־ich), x = ח (כמו ב־ach), ʁ = ר גרונית, ɐ / ɐ̯ = r בסוף הברה שהופכת לתנועה ״אַ״, ʃ = ש, ts = צ, ə = שווא, y / ʏ = ü (כמו i בשפתיים מעוגלות), ø / œ = ö (אֶ מעוגלת), ː = תנועה ארוכה. בתעתיק העברי: ֻ (קובוץ) = ü, וו = w (v).</p>` : ""}`;
+  }
+  if (i === 3) return `
+    <p class="ar-block" lang="de" dir="ltr">${esc(S.voc && c.voc ? c.voc : c.ar)}</p>
+    ${c.q ? `<p class="small" style="margin:0 0 10px">השאלה שהדובר ענה עליה: <span class="ar-inline" lang="de" dir="ltr">${esc(c.q)}</span></p>` : ""}
+    ${c.validated === false ? `<p class="small" style="margin:0 0 10px">התמלול של הקטע הזה עוד לא אומת על ידי מתנדבים נוספים ב־Common Voice.</p>` : ""}
+    <div class="row">
+      ${c.voc ? `<button class="ghost" type="button" id="btnVoc" aria-pressed="${S.voc}">עם ניקוד</button>` : ""}
+      <button class="prime" type="button" data-open="4">מילה במילה</button>
+    </div>`;
+  if (i === 4) {
+    const words = c.u.map((u, k) => {
+      return `<div class="word" data-w="${k}" role="button" tabindex="0" aria-pressed="${S.word === k}">
+        <span class="w-ar" lang="de">${esc(u.ar)}</span>
+        <span class="w-ht">${esc(u.ht || "—")}</span>
+        <span class="w-gl">${esc(u.gl || "")}</span>
+        ${u.f.length ? `<span class="w-f">${u.f.map((f) => `<span class="fchip">${esc(FEAT[f] ? FEAT[f][0] : f)}</span>`).join("")}</span>` : ""}
+      </div>`;
+    }).join("");
+    const counts = {};
+    c.u.forEach((u) => u.f.forEach((f) => (counts[f] = (counts[f] || 0) + 1)));
+    const featHtml = Object.keys(counts).filter((f) => FEAT[f]).map((f) =>
+      `<li><span class="fchip">${esc(FEAT[f][0])}</span><span>${esc(FEAT[f][1])} <span class="small">(${counts[f]} בקטע)</span></span></li>`).join("");
+    return `
+      <div class="words" id="words" dir="ltr">${words}</div>
+      <div id="morphOut">${S.word != null && c.u[S.word] ? morphHtml(S.word) : `<p class="small" style="margin:10px 0 0">לחצו על מילה כדי לראות ממה היא בנויה: צורת מילון, מין, יחסה, זמן וגוף, ופירוק של מילים מחוברות.</p>`}</div>
+      ${featHtml ? `<h4 class="small" style="margin:16px 0 0">מה שומעים בקטע הזה</h4><ul class="feat-list">${featHtml}</ul>` : ""}
+      <div class="gram">
+        <h4>גרמנית מדוברת שכדאי לזהות</h4>
+        <ul class="tips small">
+          <li><b>הפועל בסוף</b>: אחרי weil, dass, wenn, ob הפועל עובר לסוף: ..., weil es mir Spaß macht = כי זה עושה לי כיף.</li>
+          <li><b>פועל מתפרק</b>: ich stelle mir das vor (vorstellen), die Sonne kommt nicht durch (durchkommen).</li>
+          <li><b>בליעות</b>: hab' = habe, is = ist, nen / ne = einen / eine, wenn's = wenn es, mal ← ma.</li>
+          <li><b>עבר בדיבור</b>: כמעט תמיד haben / sein + Partizip II: ich hab gelesen = קראתי. רק sein, haben ומודאליים מופיעים בעבר פשוט (war, durften).</li>
+          <li><b>הייתי...</b>: würde + שם פועל: ich würde gern reisen = הייתי רוצה לנסוע. וגם wäre (הייתי / היה), hätte (היה לי).</li>
+          <li><b>מיליות</b>: doch, ja, halt, mal, schon, eben משנות את הטון ולא את התוכן.</li>
+        </ul>
+        <p class="small">לחצו על כל מילה למעלה כדי לראות את הניתוח המורפולוגי שלה.</p>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="prime" type="button" data-open="5">לתרגום</button></div>`;
+  }
+  if (i === 5) return `
+    <p class="he-tr">${esc(c.he)}</p>
+    ${c.msa ? `<p class="small">הדובר כאן משתמש בעיקר בערבית ספרותית (פֻצְחַא), למשל בסיומות ובאוצר המילים.</p>` : ""}
+    ${p.g ? `<div class="compare"><div><h4>מה שכתבתם</h4>${esc(p.g)}</div><div><h4>התרגום</h4>${esc(c.he)}</div></div>` : ""}
+    <div class="row" style="margin-top:12px"><button class="prime" type="button" data-open="6">לסיכום</button></div>`;
+  if (i === 6) return `
+    <p>האזינו לקטע פעם אחרונה, עכשיו כשאתם יודעים מה נאמר. כמה הבנתם לפני שראיתם את הטקסט?</p>
+    <div class="rate" role="group" aria-label="דירוג">
+      <button type="button" data-r="all" aria-pressed="${p.r === "all"}">הבנתי כמעט הכול</button>
+      <button type="button" data-r="part" aria-pressed="${p.r === "part"}">הבנתי חלק</button>
+      <button type="button" data-r="none" aria-pressed="${p.r === "none"}">כמעט כלום</button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="prime" type="button" id="btnNext">לקטע הבא</button>
+      <button class="ghost" type="button" id="btnReview">לקטע הבא לחזרה</button>
+      <button class="ghost" type="button" id="btnRecStep">קטע מומלץ לרמה שלי</button>
+    </div>
+    <div data-ai="1" hidden style="margin-top:18px">
+      <label class="small" for="askQ">שאלה ל-Claude על הקטע (דקדוק, מילה, הגייה)</label>
+      <textarea id="askQ" placeholder="למשל: למה הוא אומר hab ולא habe?"></textarea>
+      <div class="row" style="margin-top:8px"><button class="ghost" type="button" id="btnAsk">שאלו</button><button class="ghost" type="button" id="btnStop" hidden>עצירה</button></div>
+      <div id="askOut"></div>
+    </div>`;
+  return "";
+}
+
+function wireSteps(root = $("#steps")) {
+  const q = (sel) => root.querySelector(sel);
+  root.querySelectorAll("[data-open]").forEach((b) => b.addEventListener("click", () => openStep(+b.dataset.open)));
+  root.querySelectorAll("[data-toggle]").forEach((b) => b.addEventListener("click", () => toggleStep(+b.dataset.toggle)));
+  const g = q("#guess");
+  if (g) {
+    let t;
+    g.addEventListener("input", () => { P(S.cur.id).g = g.value.trim(); clearTimeout(t); t = setTimeout(() => touch(S.cur.id, {}), 600); });
+  }
+  const pills = q("#pills");
+  if (pills) {
+    pills.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-pill]");
+      if (!b) return;
+      const k = +b.dataset.pill;
+      S.reveal = Math.max(S.reveal, k + 1);
+      rerenderStep(2);
+    });
+    q("#btnNextWord").addEventListener("click", () => { S.reveal = Math.min(S.cur.u.length, S.reveal + 1); rerenderStep(2); });
+    q("#btnAllWords").addEventListener("click", () => { S.reveal = S.cur.u.length; rerenderStep(2); });
+    q("#btnLatin").addEventListener("click", () => { S.latin = !S.latin; rerenderStep(2); });
+  }
+  const bv = q("#btnVoc");
+  if (bv) bv.addEventListener("click", () => { S.voc = !S.voc; rerenderStep(3); });
+  const words = q("#words");
+  if (words) {
+    const show = (el) => {
+      S.word = +el.dataset.w;
+      words.querySelectorAll(".word").forEach((w) => w.setAttribute("aria-pressed", String(w === el)));
+      const mo = $("#morphOut");
+      mo.innerHTML = morphHtml(S.word);
+      wireMorph(mo);
+      const r = mo.getBoundingClientRect();
+      if (r.top > window.innerHeight * 0.75) mo.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+    };
+    words.addEventListener("click", (e) => { const el = e.target.closest(".word"); if (el) show(el); });
+    words.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { const el = e.target.closest(".word"); if (el) { e.preventDefault(); show(el); } } });
+    const mo0 = q("#morphOut");
+    if (mo0) wireMorph(mo0);
+  }
+  root.querySelectorAll(".rate button").forEach((b) => b.addEventListener("click", () => {
+    touch(S.cur.id, { r: b.dataset.r });
+    track("rated-" + b.dataset.r + "/" + S.cur.id);
+    root.querySelectorAll(".rate button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    renderList(); renderStats(); renderHeadBadges();
+    onRated(b.dataset.r);
+  }));
+  const bn = q("#btnNext");
+  if (bn) bn.addEventListener("click", () => goNext(false));
+  const br = q("#btnReview");
+  if (br) br.addEventListener("click", () => goNext(true));
+  const brs = q("#btnRecStep");
+  if (brs) brs.addEventListener("click", () => goRecommended());
+  wireAI(root);
+}
+function rerenderStep(i) {
+  const li = document.getElementById("step" + i);
+  if (!li) return;
+  const b = li.querySelector(".step-b");
+  if (b) { b.innerHTML = stepBody(i); wireSteps(b); }
+}
+
+function goNext(reviewOnly) {
+  const order = S.clips;
+  const start = S.cur.idx; // idx is 1-based
+  for (let k = 0; k < order.length; k++) {
+    const c = order[(start + k) % order.length];
+    const st = statusOf(c.id);
+    if (reviewOnly ? st === "review" : (st === "new" || st === "seen")) { selectClip(c.id); return; }
+  }
+  if (!reviewOnly) selectClip(order[start % order.length].id);
+  else alertInline("אין כרגע קטעים שסומנו לחזרה.");
+}
+function alertInline(msg) {
+  const b = $("#btnReview");
+  if (!b) return;
+  const p = document.createElement("p");
+  p.className = "small"; p.textContent = msg;
+  b.closest(".row").after(p);
+  setTimeout(() => p.remove(), 3500);
+}
+
+// ---------------------------------------------------------------- feedback by e-mail
+const FEEDBACK_TO = "ilay3355@gmail.com";
+const APP_NAME = "וִי בִּיטֶה";
+const cut = (t, n) => { t = String(t || ""); return t.length > n ? t.slice(0, n) + "…" : t; };
+function fbClipMsg(c) {
+  return [`${APP_NAME} · משוב על קטע ${c.idx}`,
+    `קטע ${c.idx} (${c.id})\n${cut(c.ar, 200)}\n${cut(c.he, 200)}\n\nהמשוב שלי:\n`];
+}
+function fbWordMsg(u, m) {
+  const c = S.cur;
+  const rows = m ? m.r.map(([a, b]) => a + ": " + b).join("\n") : "";
+  return [`${APP_NAME} · טעות במילה ${u.ar} (קטע ${c.idx})`,
+    `קטע ${c.idx} (${c.id})\nהמילה: ${u.ar} · ${u.ph} · ${u.ht}\nפירוש: ${u.gl}\n${cut(rows, 500)}\n\nמה לא נכון:\n`];
+}
+function fbMessage(kind) {
+  const c = S.cur;
+  if (kind === "clip" && c) return fbClipMsg(c);
+  if (kind === "word" && c && c.u[S.word]) {
+    const u = c.u[S.word];
+    return fbWordMsg(u, u.mk && S.morph ? S.morph[u.mk] : null);
+  }
+  return [`${APP_NAME} · משוב`, "המשוב שלי:\n"];
+}
+// mailto links do not open everywhere (inside the Claude app, for example),
+// so the dialog also offers Gmail in the browser and copying the text.
+function openFeedback(kind, opener) {
+  const [subject, body] = fbMessage(kind);
+  const wrap = document.createElement("div");
+  wrap.className = "fbdlg";
+  wrap.innerHTML = `<div class="fbbox" role="dialog" aria-modal="true" aria-labelledby="fbT">
+    <h2 id="fbT">שליחת משוב</h2>
+    <p class="small" style="margin:0">המשוב נשלח אל <b class="sel" dir="ltr">${esc(FEEDBACK_TO)}</b>. אפשר לכתוב כאן ואז לבחור איך לשלוח.</p>
+    <label for="fbS">נושא</label><input id="fbS" type="text">
+    <label for="fbB">ההודעה</label><textarea id="fbB"></textarea>
+    <div class="row">
+      <a class="prime" id="fbMail" href="#">שליחה מאפליקציית המייל</a>
+      <a class="ghost" id="fbGmail" href="#" target="_blank" rel="noopener">שליחה דרך Gmail</a>
+      <button class="ghost" id="fbCopy" type="button">העתקת ההודעה</button>
+      <button class="ghost" id="fbClose" type="button">סגירה</button>
+    </div>
+    <p class="small" id="fbMsg" aria-live="polite" style="margin:8px 0 0"></p></div>`;
+  document.body.appendChild(wrap);
+  const $ = (id) => wrap.querySelector(id);
+  const subj = $("#fbS"), ta = $("#fbB"), msg = $("#fbMsg");
+  subj.value = subject; ta.value = body;
+  const enc = encodeURIComponent;
+  const sync = () => {
+    $("#fbMail").href = `mailto:${FEEDBACK_TO}?subject=${enc(subj.value)}&body=${enc(ta.value)}`;
+    $("#fbGmail").href = `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(FEEDBACK_TO)}&su=${enc(subj.value)}&body=${enc(ta.value)}`;
+  };
+  sync();
+  subj.addEventListener("input", sync); ta.addEventListener("input", sync);
+  const close = () => {
+    wrap.remove(); document.removeEventListener("keydown", onKey);
+    if (opener && opener.isConnected) opener.focus();
+  };
+  const onKey = (e) => { if (e.key === "Escape") close(); };
+  document.addEventListener("keydown", onKey);
+  wrap.addEventListener("click", (e) => { if (e.target === wrap) close(); });
+  $("#fbClose").addEventListener("click", close);
+  $("#fbMail").addEventListener("click", () => {
+    msg.textContent = "אם אפליקציית המייל לא נפתחה, אפשר לשלוח דרך Gmail או להעתיק את ההודעה.";
+  });
+  $("#fbCopy").addEventListener("click", async () => {
+    const text = `אל: ${FEEDBACK_TO}\nנושא: ${subj.value}\n\n${ta.value}`;
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (_) {}
+    if (!ok) {
+      const t = document.createElement("textarea");
+      t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+      wrap.appendChild(t); t.select();
+      try { ok = document.execCommand("copy"); } catch (_) {}
+      t.remove();
+    }
+    msg.textContent = ok ? `ההודעה הועתקה. אפשר להדביק אותה במייל אל ${FEEDBACK_TO}.`
+      : "לא הצלחתי להעתיק אוטומטית. אפשר לסמן את הטקסט בתיבה ולהעתיק ידנית.";
+  });
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-fb]");
+  if (b) { track("feedback-open"); openFeedback(b.dataset.fb, b); }
+});
+
+// ---------------------------------------------------------------- morphology panel
+const DIALECT_HE = "גרמנית";
+function morphHtml(k) {
+  const u = S.cur.u[k];
+  if (!u) return "";
+  const m = u.mk && S.morph ? S.morph[u.mk] : null;
+  const tip = tipFor(u.ar);
+  const head = `<div class="mo-head"><span class="mo-ar" lang="de">${esc(u.ar)}</span><span class="mo-ht">${esc(u.ht || "")}</span><span class="mo-ph" lang="de-fonipa" dir="ltr">${esc(u.ph || "")}</span><span class="mo-gl">${esc(u.gl || "")}</span></div>`;
+  let body = "";
+  if (m) {
+    if (m.s.length > 1) body += `<ol class="mo-segs" dir="ltr" aria-label="המרכיבים של המילה, מימין לשמאל">${m.s.map((x) =>
+      `<li class="${x.k}">${x.a ? `<span class="sa" lang="de">${esc(x.a)}</span>` : ""}${x.h ? `<span class="sh">${esc(x.h)}</span>` : ""}<span class="sp" lang="de-fonipa" dir="ltr">${esc(x.p)}</span><span class="sl">${esc(x.l)}</span></li>`).join("")}</ol>`;
+    body += `<dl class="mo-rows">${m.r.map(([a, b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("")}</dl>`;
+    if (m.n) body += `<p class="mo-note">${esc(m.n)}</p>`;
+  } else {
+    body = `<p class="small" style="margin:0">${S.morph ? "למילה הזו עדיין אין ניתוח כתוב." : "הניתוח נטען..."}</p>`;
+  }
+  return `<div class="morph" aria-live="polite">${head}${body}${tip ? `<div class="tipbox">${esc(tip)}</div>` : ""}
+    <div class="row" data-ai ${S.sample ? "" : "hidden"} style="margin-top:12px"><button class="ghost" type="button" id="btnWordAI">הסבר מורחב מ-Claude</button></div>
+    <div id="wordAiOut"></div>
+    <p style="margin:10px 0 0"><button class="fb" type="button" data-fb="word">דיווח על טעות בניתוח</button></p></div>`;
+}
+function wireMorph(root) {
+  root.querySelectorAll("[data-ai]").forEach((el) => (el.hidden = !S.sample));
+  const b = root.querySelector("#btnWordAI");
+  if (!b) return;
+  b.addEventListener("click", async () => {
+    const u = S.cur.u[S.word];
+    if (!u) return;
+    const m = u.mk && S.morph ? S.morph[u.mk] : null;
+    const out = root.querySelector("#wordAiOut");
+    out.innerHTML = `<div class="ai wait">Claude חושב...</div>`;
+    b.disabled = true;
+    const have = m ? m.r.map(([a, v]) => a + ": " + v).join("; ") + (m.s.length > 1 ? "; פירוק: " + m.s.map((x) => x.p + " = " + x.l).join(" + ") : "") : "(אין)";
+    const prompt = `אתה מורה לגרמנית מדוברת לדוברי עברית. הסבר בעברית, בקצרה (עד 120 מילים), את המורפולוגיה של המילה ${u.ar} (${u.ph}, ${u.ht}) כפי שהיא מופיעה בקטע שלהלן: צורת מילון, חלק דיבר, מין ומספר, יחסה (Nominativ / Akkusativ / Dativ / Genitiv), זמן ודרך, גוף, פירוק של מילה מחוברת, ואם זו צורה מדוברת, מה הצורה התקנית. הוסף מילה אחת או שתיים קשורות. אם הניתוח הקיים שגוי, תקן אותו ואמור זאת במפורש. כתוב מילים גרמניות באותיות לטיניות. בלי כותרות.\n\n${clipContext(S.cur)}\n\nהניתוח הקיים של המילה: ${have}`;
+    try {
+      await S.sample(prompt, { onText: ({ text }) => { out.innerHTML = `<div class="ai">${esc(text)}</div>`; } });
+    } catch (e) {
+      const msg = aiError(e && e.code);
+      out.innerHTML = msg || (e && e.text) ? `<div class="ai">${esc((e && e.text) || "")}${e && e.text && msg ? "\n\n" : ""}${esc(msg)}</div>` : "";
+    } finally { b.disabled = false; }
+  });
+}
+
+// ---------------------------------------------------------------- Claude helpers
+function clipContext(c) {
+  const words = c.u.map((u) => `${u.ar} (${u.ht}) = ${u.gl}`).join("; ");
+  return `גרמנית: ${c.ar}\nתעתיק פונטי: ${c.ph}\nתעתיק עברי: ${c.ht}\nתרגום: ${c.he}\nפירוק מילים: ${words}`;
+}
+let aiCtl = null;
+function aiError(code) {
+  if (code === "not_granted" || code === "sampling_disabled" || code === "not_declared" || code === "capability_disabled" || code === "capability_removed") {
+    S.sample = null; document.querySelectorAll("[data-ai]").forEach((el) => (el.hidden = true));
+    return "";
+  }
+  if (code === "rate_limited") return "יותר מדי בקשות כרגע. נסו שוב בעוד דקה.";
+  if (code === "cancelled") return "";
+  if (code === "refused") return "Claude לא ענה על הבקשה הזאת. נסו לנסח אחרת.";
+  return "לא התקבלה תשובה. נסו שוב.";
+}
+function wireAI(root) {
+  document.querySelectorAll("[data-ai]").forEach((el) => (el.hidden = !S.sample));
+  const bh = root.querySelector("#btnHint");
+  if (bh) bh.addEventListener("click", async () => {
+    const c = S.cur, guess = ($("#guess")?.value || "").trim();
+    const out = $("#hintOut");
+    out.innerHTML = `<div class="ai wait">Claude חושב...</div>`;
+    bh.disabled = true;
+    const prompt = `אתה מורה לגרמנית מדוברת לדוברי עברית. התלמיד האזין להקלטה קצרה וכתב מה הבין. אל תצטט את הטקסט הגרמני ואל תגלה את התרגום המלא.\n\n${clipContext(c)}\n\nמה שהתלמיד כתב: "${guess || "(לא כתב כלום)"}"\n\nכתוב בעברית, עד שלושה משפטים קצרים: מה הוא הבין נכון (אם בכלל), ורמז אחד או שניים שיעזרו לו לשמוע את מה שפספס, למשל לאיזו מילה להקשיב או באיזה חלק של הקטע. בלי כותרות ובלי רשימות.`;
+    try {
+      await S.sample(prompt, { onText: ({ text }) => { out.innerHTML = `<div class="ai">${esc(text)}</div>`; } });
+    } catch (e) {
+      const m = aiError(e && e.code);
+      out.innerHTML = m ? `<div class="ai">${esc((e && e.text) || "")}${e && e.text ? "\n\n" : ""}${esc(m)}</div>` : "";
+    } finally { bh.disabled = false; }
+  });
+  const ba = root.querySelector("#btnAsk");
+  if (ba) ba.addEventListener("click", async () => {
+    const q = ($("#askQ").value || "").trim();
+    if (!q) { $("#askQ").focus(); return; }
+    const out = $("#askOut"), stop = $("#btnStop");
+    out.innerHTML = `<div class="ai wait">Claude חושב...</div>`;
+    ba.disabled = true; stop.hidden = false;
+    aiCtl = new AbortController();
+    stop.onclick = () => aiCtl && aiCtl.abort();
+    const prompt = `אתה מורה לגרמנית מדוברת לדוברי עברית. ענה על שאלת התלמיד על הקטע הבא, בעברית, בקצרה (עד 120 מילים). כשאתה מזכיר מילה גרמנית, כתוב אותה באותיות לטיניות ואחריה תעתיק עברי מנוקד בסוגריים. אם השאלה לא קשורה לקטע או לגרמנית, ענה בקצרה והחזר אותו לקטע.\n\n${clipContext(S.cur)}\n\nשאלת התלמיד: ${q}`;
+    try {
+      await S.sample(prompt, { signal: aiCtl.signal, cache: false, onText: ({ text }) => { out.innerHTML = `<div class="ai">${esc(text)}</div>`; } });
+    } catch (e) {
+      const m = aiError(e && e.code);
+      out.innerHTML = (e && e.text) || m ? `<div class="ai">${esc((e && e.text) || "")}${e && e.text && m ? "\n\n" : ""}${esc(m)}</div>` : "";
+    } finally { ba.disabled = false; stop.hidden = true; aiCtl = null; }
+  });
+}
+
+// ---------------------------------------------------------------- audio + waveform
+const au = $("#au");
+const ICON_PLAY = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5v14L6 12z" fill="currentColor"/></svg>`;
+const ICON_PAUSE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>`;
+let raf = 0;
+function duration() { return (au.duration && isFinite(au.duration)) ? au.duration : (S.cur ? S.cur.dur : 1); }
+function colors() {
+  const cs = getComputedStyle(document.documentElement);
+  return { wave: cs.getPropertyValue("--wave").trim(), glass: cs.getPropertyValue("--glass").trim(), sel: cs.getPropertyValue("--amber-soft").trim(), amber: cs.getPropertyValue("--amber").trim(), line: cs.getPropertyValue("--line").trim() };
+}
+let COL = null;
+function setupWave() {
+  const cv = $("#wave");
+  if (!cv) return;
+  COL = colors();
+  const resize = () => {
+    const r = cv.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    cv.width = Math.max(1, Math.round(r.width * dpr));
+    cv.height = Math.max(1, Math.round(r.height * dpr));
+    drawWave();
+  };
+  resize();
+  if (!setupWave.ro) { setupWave.ro = new ResizeObserver(() => { const c2 = $("#wave"); if (c2) { const r = c2.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; c2.width = Math.max(1, Math.round(r.width * dpr)); c2.height = Math.max(1, Math.round(r.height * dpr)); drawWave(); } }); }
+  setupWave.ro.disconnect(); setupWave.ro.observe(cv);
+  const xToT = (clientX) => { const r = cv.getBoundingClientRect(); const f = Math.min(1, Math.max(0, (r.right - clientX) / r.width)); return f * duration(); };
+  cv.addEventListener("pointerdown", (e) => {
+    if (!S.cur.audio) return;
+    cv.setPointerCapture(e.pointerId);
+    S.dragging = { x: e.clientX, t: xToT(e.clientX) };
+  });
+  cv.addEventListener("pointermove", (e) => {
+    if (!S.dragging) return;
+    if (Math.abs(e.clientX - S.dragging.x) > 4) {
+      const t2 = xToT(e.clientX);
+      S.sel = { a: Math.min(S.dragging.t, t2), b: Math.max(S.dragging.t, t2) };
+      drawWave(); updatePlayInfo();
+    }
+  });
+  const end = (e) => {
+    if (!S.dragging) return;
+    const moved = Math.abs(e.clientX - S.dragging.x) > 4;
+    if (!moved || !S.sel || S.sel.b - S.sel.a < 0.25) {
+      // a click (or a tiny accidental drag) jumps to that point
+      if (moved) S.sel = null;
+      seekTo(S.dragging.t);
+    }
+    S.dragging = null; drawWave(); updatePlayInfo();
+  };
+  cv.addEventListener("pointerup", end);
+  cv.addEventListener("pointercancel", () => { S.dragging = null; });
+  // axis labels: seconds from the right
+  const d = S.cur.dur, step = d > 16 ? 4 : d > 7 ? 2 : 1;
+  const labels = [];
+  for (let s = 0; s <= d + 0.01; s += step) labels.push(s);
+  $("#axis").innerHTML = labels.map((s) => `<span>${s}</span>`).join("");
+  $("#axis").style.justifyContent = "space-between";
+
+  $("#btnPlay").addEventListener("click", togglePlay);
+  $("#btnBack").addEventListener("click", () => seekTo(Math.max(0, (au.currentTime || 0) - 3)));
+  document.querySelectorAll("[data-rate]").forEach((b) => b.addEventListener("click", () => {
+    S.rate = +b.dataset.rate; au.playbackRate = S.rate;
+    document.querySelectorAll("[data-rate]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  }));
+  $("#btnLoop").addEventListener("click", (e) => { S.loop = !S.loop; e.currentTarget.setAttribute("aria-pressed", String(S.loop)); });
+}
+function drawWave() {
+  const cv = $("#wave");
+  if (!cv || !S.cur) return;
+  const ctx = cv.getContext("2d");
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0, 0, W, H);
+  if (!COL) COL = colors();
+  const d = duration();
+  const tx = (t) => W - (t / d) * W; // time runs right to left
+  if (S.sel) {
+    ctx.fillStyle = COL.sel;
+    ctx.fillRect(tx(S.sel.b), 0, tx(S.sel.a) - tx(S.sel.b), H);
+  }
+  const peaks = S.cur.peaks;
+  const dpr = window.devicePixelRatio || 1;
+  if (peaks && peaks.length) {
+    const n = peaks.length, bw = W / n, gap = Math.min(2 * dpr, bw * 0.35);
+    const playedT = au.currentTime || 0;
+    for (let i = 0; i < n; i++) {
+      const t = (i + 0.5) / n * d;
+      const h = Math.max(2 * dpr, peaks[i] * (H - 6 * dpr));
+      ctx.fillStyle = t <= playedT ? COL.glass : COL.wave;
+      const x = W - (i + 1) * bw + gap / 2;
+      ctx.fillRect(x, (H - h) / 2, Math.max(1, bw - gap), h);
+    }
+  } else {
+    ctx.strokeStyle = COL.line; ctx.setLineDash([4 * dpr, 4 * dpr]); ctx.lineWidth = 1.5 * dpr;
+    ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke(); ctx.setLineDash([]);
+  }
+  if (S.cur.audio) {
+    const x = tx(au.currentTime || 0);
+    ctx.fillStyle = COL.amber; ctx.fillRect(x - dpr, 0, 2 * dpr, H);
+  }
+}
+function updatePlayInfo() {
+  const si = $("#selInfo"), li = $("#listenInfo");
+  if (si) si.innerHTML = S.sel ? `נבחר ${S.sel.a.toFixed(1)}–${S.sel.b.toFixed(1)} ש׳ <button type="button" class="ghost" id="btnClearSel" style="padding:1px 8px">ניקוי</button>` : "";
+  const cs = $("#btnClearSel");
+  if (cs) cs.addEventListener("click", () => { S.sel = null; drawWave(); updatePlayInfo(); });
+  if (li && S.cur) { const n = (S.prog[S.cur.id] || {}).l || 0; li.textContent = n ? `האזנות: ${n}` : ""; }
+}
+// Each clip is fetched whole and played from memory, so seeking never depends on the server.
+let blobUrl = null, loadToken = 0, usingBlob = false, pendingPlay = false, pendingSeek = null;
+function setAudio(src) {
+  const token = ++loadToken;
+  pendingPlay = false; pendingSeek = null;
+  if (blobUrl) { URL.revokeObjectURL(blobUrl); blobUrl = null; }
+  usingBlob = false;
+  au.removeAttribute("src"); au.load();
+  if (!src) return;
+  fetch(src).then((r) => (r.ok ? r.blob() : Promise.reject(r.status))).then((b) => {
+    if (token !== loadToken) return;
+    blobUrl = URL.createObjectURL(b.type ? b : new Blob([b], { type: "audio/mpeg" }));
+    usingBlob = true; au.src = blobUrl; au.load();
+  }).catch(() => {
+    if (token !== loadToken) return;
+    au.src = src; au.load();
+  });
+}
+au.addEventListener("error", () => {
+  if (usingBlob && S.cur && S.cur.audio) { usingBlob = false; au.src = S.cur.audio; au.load(); }
+});
+function ready() { return au.readyState >= 1 && au.currentSrc; }
+function seekTo(t) {
+  if (S.sel && (t < S.sel.a - 0.01 || t > S.sel.b + 0.01)) { S.sel = null; updatePlayInfo(); }
+  if (ready()) au.currentTime = t; else pendingSeek = t;
+  drawWave();
+}
+au.addEventListener("loadedmetadata", () => {
+  if (pendingSeek != null) { au.currentTime = pendingSeek; pendingSeek = null; }
+  if (pendingPlay) { pendingPlay = false; togglePlay(); }
+});
+function togglePlay() {
+  if (!S.cur || !S.cur.audio) return;
+  if (!ready()) { pendingPlay = !pendingPlay; return; }
+  if (au.paused) {
+    if (S.sel && (au.currentTime < S.sel.a || au.currentTime >= S.sel.b - 0.05)) au.currentTime = S.sel.a;
+    else if (au.ended || au.currentTime >= duration() - 0.05) au.currentTime = 0;
+    au.playbackRate = S.rate;
+    track("clip-play/" + S.cur.id, true);
+    au.play().catch(() => {});
+  } else au.pause();
+}
+au.addEventListener("play", () => {
+  const b = $("#btnPlay"); if (b) { b.innerHTML = ICON_PAUSE; b.setAttribute("aria-label", "עצירה"); }
+  touch(S.cur.id, { l: ((S.prog[S.cur.id] || {}).l || 0) + 1 });
+  updatePlayInfo();
+  cancelAnimationFrame(raf);
+  const tick = () => {
+    if (S.sel && au.currentTime >= S.sel.b) {
+      if (S.loop) au.currentTime = S.sel.a; else { au.pause(); au.currentTime = S.sel.b; }
+    }
+    drawWave();
+    if (!au.paused) raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+});
+au.addEventListener("pause", () => { const b = $("#btnPlay"); if (b) { b.innerHTML = ICON_PLAY; b.setAttribute("aria-label", "נגינה"); } drawWave(); });
+au.addEventListener("ended", () => { if (S.loop) { au.currentTime = S.sel ? S.sel.a : 0; au.play().catch(() => {}); } });
+au.addEventListener("loadedmetadata", drawWave);
+document.addEventListener("keydown", (e) => {
+  if (e.code !== "Space" && e.key !== " ") return;
+  const tag = (e.target && e.target.tagName) || "";
+  if (/INPUT|TEXTAREA|BUTTON|SELECT/.test(tag) || (e.target && e.target.getAttribute && e.target.getAttribute("role") === "button")) return;
+  e.preventDefault(); togglePlay();
+});
+const themeRefresh = () => { COL = colors(); drawWave(); };
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", themeRefresh);
+new MutationObserver(themeRefresh).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+// ---------------------------------------------------------------- selection
+function selectClip(id) {
+  const c2 = S.byId[id];
+  if (!c2) return;
+  track("clip-open/" + id, true);
+  au.pause();
+  S.cur = c2; S.open = new Set(); S.exp = new Set(); S.reveal = 0; S.word = null; S.sel = null; S.voc = false; S.latin = false;
+  setAudio(c2.audio);
+  try { localStorage.setItem(LS_LAST, id); } catch {}
+  renderDesk(); renderList();
+  closeArchive();
+  const top = $("#desk").getBoundingClientRect().top;
+  if (top < 0) window.scrollTo({ top: window.scrollY + top - 12 });
+}
+
+// ---------------------------------------------------------------- archive interactions
+$("#topicChips").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-t]"); if (!b) return;
+  S.topic = b.dataset.t; renderTopics(); renderList();
+});
+$("#statusSeg").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-s]"); if (!b) return;
+  S.status = b.dataset.s;
+  $("#statusSeg").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  renderList();
+});
+$("#clipList").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-id]"); if (b) selectClip(b.dataset.id);
+});
+let scrim = null;
+function openArchive() {
+  $("#archive").classList.add("open"); $("#btnArchive").setAttribute("aria-expanded", "true");
+  if (scrim && scrim.isConnected) return;
+  scrim = document.createElement("div"); scrim.className = "scrim"; scrim.addEventListener("click", closeArchive); document.body.appendChild(scrim);
+}
+function closeArchive() {
+  $("#archive").classList.remove("open"); $("#btnArchive").setAttribute("aria-expanded", "false");
+  document.querySelectorAll(".scrim").forEach((el) => el.remove());
+  scrim = null;
+}
+$("#btnArchive").addEventListener("click", openArchive);
+$("#btnCloseArchive").addEventListener("click", closeArchive);
+
+// ---------------------------------------------------------------- learner level
+// Each clip has a difficulty d in 0..1 (its percentile in this app) and a band lv 1..5.
+// The learner's level theta lives on the same scale: the difficulty at which a clip is
+// understood about half the time. It is fitted from the placement test and from the
+// "how much did you understand" ratings (all = 1, part = 0.5, none = 0).
+const LV_NAMES = ["", "מתחילים", "בסיסית", "ביניים", "מתקדמת", "גבוהה"];
+const LV_KEY = "_lvl";
+S.lvl = { theta: null, n: 0 };
+const sig = (x) => 1 / (1 + Math.exp(-x));
+function levelEvidence() {
+  const ev = [];
+  const pl = (S.prog[LV_KEY] || {}).pl || [];
+  for (const [d, o] of pl) ev.push([d, o]);
+  for (const c of S.clips) {
+    const p = S.prog[c.id];
+    if (p && p.r && c.d != null) ev.push([c.d, { all: 1, part: 0.5, none: 0 }[p.r]]);
+  }
+  return ev;
+}
+function fitTheta(ev) {
+  if (!ev.length) return null;
+  let best = 0.3, bl = -Infinity;
+  for (let t = 0; t <= 1.0001; t += 0.01) {
+    let ll = -((t - 0.3) ** 2) / (2 * 0.35 ** 2);
+    for (const [d, o] of ev) {
+      const p = Math.min(0.995, Math.max(0.005, sig((t - d) / 0.12)));
+      ll += o * Math.log(p) + (1 - o) * Math.log(1 - p);
+    }
+    if (ll > bl) { bl = ll; best = t; }
+  }
+  return best;
+}
+const bandOf = (t) => (t == null ? 0 : Math.min(5, 1 + Math.floor(t * 5)));
+function levelRefresh() {
+  const ev = levelEvidence();
+  S.lvl = { theta: fitTheta(ev), n: ev.length };
+  renderLevel();
+}
+function renderLevel() {
+  const box = $("#lvlBox");
+  if (!box) return;
+  const b = bandOf(S.lvl.theta);
+  if (!b) {
+    box.innerHTML = `<button class="ghost" type="button" data-lv="test">מבחן רמה</button>`;
+    return;
+  }
+  box.innerHTML = `<span class="lvl-chip">הרמה שלך: <b>${b} · ${LV_NAMES[b]}</b><span class="lvl-meter" aria-hidden="true">${[1, 2, 3, 4, 5].map((k) => `<i class="${k <= b ? "on" : ""}"></i>`).join("")}</span></span>` +
+    `<button class="ghost" type="button" data-lv="rec">קטע מומלץ</button>` +
+    `<button class="fb" type="button" data-lv="test">מבחן רמה חוזר</button>`;
+}
+$("#lvlBox").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-lv]");
+  if (!b) return;
+  if (b.dataset.lv === "rec") goRecommended(); else openPlacement(b);
+});
+function recommended(excludeId) {
+  const th = S.lvl.theta == null ? 0.25 : S.lvl.theta;
+  let best = null, bd = Infinity;
+  for (const c of S.clips) {
+    if (!c.audio || c.id === excludeId || c.d == null) continue;
+    const st = statusOf(c.id);
+    if (st !== "new" && st !== "seen") continue;
+    const dd = Math.abs(c.d - (th + 0.03));
+    if (dd < bd) { bd = dd; best = c; }
+  }
+  return best;
+}
+function goRecommended() {
+  const c = recommended(S.cur && S.cur.id);
+  if (!c) { bird("think", "כבר עברת על כל הקטעים! אפשר לחזור לקטעים שסימנת לחזרה.", [], 6000); return; }
+  selectClip(c.id);
+  bird("talk", `קטע ${c.idx}, ברמת קושי ${c.lv} מתוך 5. ${S.lvl.theta == null ? "כדאי לעשות מבחן רמה כדי שאדע מה מתאים לך." : "בדיוק בשבילך."}`, [], 5000);
+}
+const PRAISE = ["יפה מאוד!", "כל הכבוד, האוזן מתרגלת.", "מצוין! עוד אחד?", "איזה יופי, הבנת את רוב הקטע."];
+function onRated(r) {
+  const before = bandOf(S.lvl.theta);
+  levelRefresh();
+  const after = bandOf(S.lvl.theta);
+  if (after > before && before > 0) { bird("cheer", `עלית לרמה ${after}: ${LV_NAMES[after]}!`, [["קטע מומלץ", goRecommended]], 7000); return; }
+  if (r === "all") bird("cheer", PRAISE[Math.floor(Math.random() * PRAISE.length)], [], 3500);
+  else if (r === "part") bird("talk", "הבנה חלקית זו התחלה טובה. הקטע יחכה לך ברשימת 'לחזרה'.", [], 5000);
+  else bird("think", "קורה. נסה להאזין שוב במהירות 0.7×, כשהמילים מולך.", [], 5000);
+}
+
+// ---------------------------------------------------------------- placement test
+const PT_N = 8;
+let pt = null;
+function ptPool() {
+  return S.clips.filter((c) => c.audio && c.d != null && c.dur <= 9 && (c.he || "").length <= 170 && (c.he || "").length >= 6);
+}
+function ptPick(target) {
+  let best = null, bd = Infinity;
+  for (const c of ptPool()) {
+    if (pt.used.has(c.id)) continue;
+    const dd = Math.abs(c.d - target) + Math.random() * 0.02;
+    if (dd < bd) { bd = dd; best = c; }
+  }
+  return best;
+}
+function ptOptions(c) {
+  const pool = ptPool().filter((x) => x.id !== c.id && x.he !== c.he)
+    .map((x) => [Math.abs(x.u.length - c.u.length) + Math.random() * 2, x]).sort((a, b) => a[0] - b[0]).slice(0, 12).map((x) => x[1]);
+  const ds = [];
+  while (ds.length < 2 && pool.length) ds.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+  const opts = [[c.he, 1], ...ds.map((x) => [x.he, 0])];
+  for (let i = opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+  return [...opts, ["לא הבנתי", -1]];
+}
+function openPlacement(opener) {
+  if (pt) return;
+  try { au.pause(); } catch {}
+  pt = { tok: 0, blob: null, i: 0, target: 0.3, step: 0.2, lastDir: 0, used: new Set(), items: [], audio: new Audio(), opener };
+  const wrap = document.createElement("div");
+  wrap.className = "fbdlg";
+  wrap.innerHTML = `<div class="fbbox" role="dialog" aria-modal="true" aria-labelledby="ptT"><h2 id="ptT">מבחן רמה</h2><div id="ptBody"></div></div>`;
+  document.body.appendChild(wrap);
+  pt.wrap = wrap;
+  wrap.addEventListener("click", (e) => { if (e.target === wrap) closePlacement(); });
+  pt.onKey = (e) => { if (e.key === "Escape") closePlacement(); };
+  document.addEventListener("keydown", pt.onKey);
+  birdHide();
+  ptIntro();
+}
+function ptLoad(src) {
+  const tok = ++pt.tok;
+  pt.audio.removeAttribute("src");
+  fetch(src).then((r) => (r.ok ? r.blob() : Promise.reject(r.status))).then((b) => {
+    if (!pt || tok !== pt.tok) return;
+    if (pt.blob) URL.revokeObjectURL(pt.blob);
+    pt.blob = URL.createObjectURL(b.type ? b : new Blob([b], { type: "audio/mpeg" }));
+    pt.audio.src = pt.blob;
+  }).catch(() => { if (pt && tok === pt.tok) pt.audio.src = src; });
+}
+function closePlacement() {
+  if (!pt) return;
+  pt.audio.pause();
+  if (pt.blob) URL.revokeObjectURL(pt.blob);
+  document.removeEventListener("keydown", pt.onKey);
+  pt.wrap.remove();
+  const o = pt.opener;
+  pt = null;
+  birdState("idle");
+  if (o && o.isConnected) o.focus();
+}
+function ptIntro() {
+  const body = pt.wrap.querySelector("#ptBody");
+  body.innerHTML = `<p>אשמיע לך ${PT_N} קטעים קצרים, מהקל לקשה. אחרי כל קטע תבחר מה נאמר בו, או "לא הבנתי". לפי התשובות אתאים את הקטע הבא: אחרי תשובה נכונה הוא יהיה קשה יותר, ואחרי טעות קל יותר.</p>
+    <p class="small">אפשר להאזין לכל קטע עד שלוש פעמים. זה לוקח בערך שלוש דקות, והקטעים במבחן לא נספרים כנפתחו.</p>
+    <div class="row" style="margin-top:12px"><button class="prime" type="button" id="ptGo">מתחילים</button><button class="ghost" type="button" id="ptLater">אחר כך</button></div>`;
+  body.querySelector("#ptGo").addEventListener("click", ptNext);
+  body.querySelector("#ptLater").addEventListener("click", closePlacement);
+  body.querySelector("#ptGo").focus();
+  birdState("talk");
+}
+function ptNext() {
+  if (pt.i >= PT_N) return ptResult();
+  const c = ptPick(pt.target);
+  if (!c) return ptResult();
+  pt.used.add(c.id);
+  pt.cur = c; pt.plays = 0; pt.answered = false;
+  const body = pt.wrap.querySelector("#ptBody");
+  body.innerHTML = `<p class="small" style="margin:0">קטע ${pt.i + 1} מתוך ${PT_N}</p>
+    <div class="pt-prog"><i style="width:${(pt.i / PT_N) * 100}%"></i></div>
+    <div class="pt-play"><button class="play" type="button" id="ptPlay" aria-label="השמעה">${ICON_PLAY}</button><span class="small" id="ptPlays">אפשר להאזין 3 פעמים</span></div>
+    <p style="margin:14px 0 0">מה נאמר בקטע?</p>
+    <div class="pt-opts" id="ptOpts">${ptOptions(c).map(([t, v]) => `<button type="button" data-v="${v}" class="${v === -1 ? "dk" : ""}" disabled>${esc(t)}</button>`).join("")}</div>
+    <div class="row" style="margin-top:12px"><button class="prime" type="button" id="ptNextBtn" hidden>${pt.i + 1 < PT_N ? "לקטע הבא" : "לתוצאה"}</button></div>`;
+  ptLoad(c.audio);
+  pt.audio.onplay = () => birdState("listen");
+  pt.audio.onpause = pt.audio.onended = () => { if (pt && !pt.answered) birdState("idle"); };
+  const play = body.querySelector("#ptPlay");
+  play.addEventListener("click", () => {
+    if (!pt.audio.paused) { pt.audio.pause(); return; }
+    if (pt.plays >= 3) return;
+    if (!pt.audio.getAttribute("src")) pt.audio.src = c.audio;
+    pt.plays++;
+    pt.audio.currentTime = 0;
+    pt.audio.play().catch(() => {});
+    const left = 3 - pt.plays;
+    body.querySelector("#ptPlays").textContent = left ? `נשארו ${left} האזנות` : "זו הייתה ההאזנה האחרונה";
+    body.querySelectorAll("#ptOpts button").forEach((b) => (b.disabled = false));
+  });
+  body.querySelector("#ptOpts").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-v]");
+    if (!b || b.disabled || pt.answered) return;
+    pt.answered = true;
+    pt.audio.pause();
+    const ok = b.dataset.v === "1";
+    body.querySelectorAll("#ptOpts button").forEach((x) => {
+      x.disabled = true;
+      if (x.dataset.v === "1") x.classList.add("ok");
+    });
+    if (!ok) b.classList.add("bad");
+    pt.items.push([c.d, ok ? 1 : 0]);
+    const dir = ok ? 1 : -1;
+    if (pt.lastDir && dir !== pt.lastDir) pt.step = Math.max(0.07, pt.step / 2);
+    pt.lastDir = dir;
+    pt.target = Math.min(0.97, Math.max(0.03, pt.target + dir * pt.step));
+    pt.i++;
+    birdState(ok ? "cheer" : "think");
+    setTimeout(() => { if (pt && pt.answered) birdState("idle"); }, 1700);
+    const nb = body.querySelector("#ptNextBtn");
+    nb.hidden = false; nb.focus();
+    nb.addEventListener("click", ptNext);
+  });
+  play.focus();
+}
+function ptResult() {
+  const prev = S.prog[LV_KEY] || {};
+  touch(LV_KEY, { pl: pt.items, at: Date.now(), prev: prev.pl ? prev.pl.length : 0 });
+  levelRefresh();
+  const b = bandOf(S.lvl.theta);
+  track("placement-done/level-" + b);
+  const right = pt.items.filter((x) => x[1]).length;
+  const body = pt.wrap.querySelector("#ptBody");
+  body.innerHTML = `<p class="small" style="margin:0">ענית נכון על ${right} מתוך ${pt.items.length} קטעים.</p>
+    <p class="pt-res">הרמה שלך: <b>${b} · ${LV_NAMES[b]}</b></p>
+    <p>מעכשיו הרמה תתעדכן לבד לפי מה שתסמן בסוף כל קטע ("הבנתי כמעט הכול", "חלקית", "כמעט כלום"). הכפתור "קטע מומלץ" יבחר לך קטע חדש שמתאים לרמה.</p>
+    <div class="row" style="margin-top:12px"><button class="prime" type="button" id="ptRec">לקטע מומלץ</button><button class="ghost" type="button" id="ptClose">סגירה</button></div>`;
+  body.querySelector("#ptRec").addEventListener("click", () => { closePlacement(); goRecommended(); });
+  body.querySelector("#ptClose").addEventListener("click", closePlacement);
+  body.querySelector("#ptRec").focus();
+  birdState("cheer");
+  setTimeout(() => birdState("idle"), 1800);
+}
+
+// ---------------------------------------------------------------- the hoopoe (هدهد)
+const HP_KEY = LS_KEY + "-hoopoe";
+const HOOPOE_SVG = `<svg viewBox="0 0 124 112" aria-hidden="true" focusable="false"><g class="hp-all">
+  <g stroke="#5B4636" stroke-width="2.4" stroke-linecap="round" fill="none"><path d="M57 89 L54 103 M54 103 l-6 1 M54 103 l3 3"/><path d="M68 89 L70 103 M70 103 l-5 1 M70 103 l5 2"/></g>
+  <path d="M38 73 L7 63 L9 76 L37 83 Z" fill="var(--hp-dark)"/><path d="M15 65.6 L14.2 77.6 L20 79 L20.8 67.4 Z" fill="var(--hp-light)"/>
+  <ellipse cx="60" cy="75" rx="28" ry="18" fill="var(--hp-body)"/>
+  <ellipse cx="66" cy="82" rx="16" ry="8" fill="#EDB386"/>
+  <g class="hp-wing"><clipPath id="hpWing"><path d="M36 69 Q57 57 80 69 Q67 88 39 85 Z"/></clipPath>
+    <g clip-path="url(#hpWing)"><rect x="30" y="54" width="60" height="40" fill="var(--hp-dark)"/>
+    <g fill="var(--hp-light)"><rect x="43" y="54" width="4.4" height="40" transform="rotate(16 45 74)"/><rect x="53" y="54" width="4.4" height="40" transform="rotate(16 55 74)"/><rect x="63" y="54" width="4.4" height="40" transform="rotate(16 65 74)"/><rect x="73" y="54" width="4" height="40" transform="rotate(16 75 74)"/></g></g></g>
+  <g class="hp-head">
+    <path d="M70 66 Q73 52 82 48 L88 60 Q80 66 70 66 Z" fill="var(--hp-body)"/>
+    <g class="hp-crest">${[-76, -58, -40, -22, -4, 14].map((a, k) => `<g transform="rotate(${a} 80 42)"><path d="M80 42 C76 34 76 22 80 ${15 + (k % 2) * 2} C84 22 84 34 80 42 Z" fill="var(--hp-body)"/><path d="M80 ${15 + (k % 2) * 2} C78 19 77.6 22 78 24 L82 24 C82.4 22 82 19 80 ${15 + (k % 2) * 2} Z" fill="var(--hp-dark)"/><rect x="77.8" y="24" width="4.4" height="2.2" fill="var(--hp-light)"/></g>`).join("")}</g>
+    <circle cx="84" cy="50" r="14" fill="var(--hp-body)"/>
+    <path class="hp-beak-lo" d="M95.5 52.5 Q106 55 116.5 60.5" stroke="#3B2F28" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M95 46.6 Q109 49 121.6 59.8 Q120.4 61 119 60.6 Q107.6 54.2 95 53.6 Z" fill="#3B2F28"/>
+    <g class="hp-eye"><circle cx="89" cy="46.5" r="2.9" fill="#1D1712"/><circle cx="90" cy="45.6" r=".95" fill="#fff"/></g>
+  </g>
+  <g class="hp-notes" stroke="var(--glass)" stroke-width="2" fill="none" stroke-linecap="round"><path d="M104 30 q4 4 0 8"/><path d="M110 26 q6 6 0 14"/></g>
+  <text class="hp-q" x="99" y="26" font-size="18" font-weight="700" fill="var(--glass)" font-family="sans-serif">?</text>
+</g></svg>`;
+const hp = document.createElement("div");
+hp.className = "hoopoe"; hp.id = "hoopoe"; hp.dataset.state = "idle";
+hp.innerHTML = `<div class="hp-bubble" id="hpBubble" role="status" aria-live="polite" hidden><button class="hp-x" type="button" aria-label="סגירת ההודעה">×</button><div class="hp-msg"></div><div class="hp-acts"></div></div>
+  <button class="hp-bird" type="button" aria-label="הדוכיפת: טיפים, מבחן רמה וקטע מומלץ">${HOOPOE_SVG}</button>`;
+document.body.appendChild(hp);
+try { if (localStorage.getItem(HP_KEY) === "min") hp.dataset.min = "1"; } catch {}
+let hpTimer = null, hpStateTimer = null;
+function birdState(st, ms) {
+  hp.dataset.state = st;
+  clearTimeout(hpStateTimer);
+  if (ms) hpStateTimer = setTimeout(() => { hp.dataset.state = (!au.paused ? "listen" : "idle"); }, ms);
+}
+function birdHide() { clearTimeout(hpTimer); hp.querySelector("#hpBubble").hidden = true; hp.dataset.menu = ""; hp.dataset.open = ""; }
+function bird(st, msg, acts = [], ms = 5000, force = false) {
+  if (pt) return;
+  const quiet = hp.dataset.min === "1";
+  birdState(st, st === "cheer" ? 1700 : st === "talk" ? 1400 : st === "think" ? 2600 : 0);
+  if (quiet && !force) return;
+  const bub = hp.querySelector("#hpBubble");
+  bub.querySelector(".hp-msg").textContent = msg;
+  const box = bub.querySelector(".hp-acts");
+  box.innerHTML = "";
+  acts.forEach(([label, fn], k) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = k ? "ghost" : "prime"; b.textContent = label;
+    b.addEventListener("click", () => { birdHide(); fn(b); });
+    box.appendChild(b);
+  });
+  bub.hidden = false;
+  hp.dataset.menu = ""; hp.dataset.open = "1";
+  clearTimeout(hpTimer);
+  if (ms) hpTimer = setTimeout(birdHide, ms);
+}
+hp.querySelector(".hp-x").addEventListener("click", birdHide);
+const TIPS_GEN = [
+  "קודם מאזינים בלי לקרוא. את המילים פותחים רק אחרי שניסית.",
+  "גרירה על גל הקול בוחרת קטע קטן, ועם 'לולאה' אפשר לשמוע אותו שוב ושוב.",
+  "לחיצה על מילה בשלב הפירוק מראה את הניתוח שלה: צורת מילון, מין ויחסה, ופירוק של מילים מחוברות.",
+  "במהירות 0.7× קל יותר לשמוע את הסופיות של המילים.",
+  "קטע שהבנת רק חלקית נשמר ברשימת 'לחזרה'. כדאי לחזור אליו בעוד יום־יומיים.",
+  "לא צריך להבין כל מילה. נסה לתפוס קודם מי מדבר, על מה, ובאיזה טון.",
+];
+let tipK = Math.floor(Math.random() * TIPS_GEN.length);
+function birdMenu() {
+  const min = hp.dataset.min === "1";
+  bird("talk", S.lvl.theta == null ? "שלום! מה נעשה?" : `הרמה שלך: ${bandOf(S.lvl.theta)} · ${LV_NAMES[bandOf(S.lvl.theta)]}. מה נעשה?`, [
+    ["קטע מומלץ", goRecommended],
+    ["מבחן רמה", (b) => openPlacement(b)],
+    ["טיפ", () => bird("talk", TIPS_GEN[tipK++ % TIPS_GEN.length], [["עוד טיפ", () => birdMenuTip()]], 9000, true)],
+    [min ? "להגדיל אותי" : "להקטין אותי", () => {
+      hp.dataset.min = min ? "" : "1";
+      try { localStorage.setItem(HP_KEY, min ? "" : "min"); } catch {}
+    }],
+  ], 12000, true);
+  hp.dataset.menu = "1";
+}
+function birdMenuTip() { bird("talk", TIPS_GEN[tipK++ % TIPS_GEN.length], [["עוד טיפ", () => birdMenuTip()]], 9000, true); }
+hp.querySelector(".hp-bird").addEventListener("click", () => {
+  const bub = hp.querySelector("#hpBubble");
+  if (!bub.hidden && hp.dataset.menu === "1") birdHide(); else birdMenu();
+});
+au.addEventListener("play", () => birdState("listen"));
+au.addEventListener("pause", () => { if (hp.dataset.state === "listen") birdState("idle"); });
+au.addEventListener("ended", () => { if (hp.dataset.state === "listen" && au.paused) birdState("idle"); });
+function birdGreet() {
+  if (pt) return;
+  if (S.lvl.theta == null) {
+    bird("talk", `שלום! אני הדוכיפת, der Wiedehopf בגרמנית, ואני אלווה אותך בקטעים. רוצה שנבדוק קודם את הרמה שלך? זה לוקח בערך שלוש דקות.`,
+      [["מבחן רמה", (b) => openPlacement(b)], ["אחר כך", () => {}]], 0);
+  } else {
+    const b = bandOf(S.lvl.theta);
+    bird("talk", `ברוך שובך! הרמה שלך: ${b} · ${LV_NAMES[b]}.`, [["קטע מומלץ", goRecommended]], 6000);
+  }
+}
+
+// ---------------------------------------------------------------- boot
+(async () => {
+  try {
+    const r = await fetch("clips.json");
+    if (!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    S.clips = data.clips.map((x, i) => ({ ...x, idx: i + 1 }));
+  } catch {
+    $("#loading").textContent = "לא הצלחתי לטעון את הקטעים. רעננו את הדף.";
+    return;
+  }
+  S.clips.forEach((x) => (S.byId[x.id] = x));
+  fetch("morph.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((m) => {
+    S.morph = m || {};
+    if (S.word != null) rerenderStep(4);
+  });
+  const seen = new Set();
+  for (const x of S.clips) if (!seen.has(x.topic)) { seen.add(x.topic); TOPIC_ORDER.push([x.topic, x.topicName]); }
+  renderTopics(); renderStats();
+  let last = null;
+  try { last = localStorage.getItem(LS_LAST); } catch {}
+  const first = (last && S.byId[last]) ? last : (S.clips.find((x) => x.audio && statusOf(x.id) === "new") || S.clips[0]).id;
+  selectClip(first);
+  levelRefresh();
+  initStore().then(() => { levelRefresh(); }).finally(() => birdGreet());
+  try {
+    if (window.claude?.use) {
+      S.sample = await window.claude.use("sample");
+      document.querySelectorAll("[data-ai]").forEach((el) => (el.hidden = !S.sample));
+    }
+  } catch { S.sample = null; }
+})();
+})();
+</script>
+
