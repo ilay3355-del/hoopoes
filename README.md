@@ -1,8 +1,10 @@
 # Hoopoes
 
-Listening apps for spoken Arabic, one short clip at a time.
+Listening apps for spoken languages, one short clip at a time.
 
 - `isma/` — אִסְמַע (Palestinian Arabic)
 - `eh-da/` — אֵה דַה (Egyptian / Cairene Arabic)
+- `chi-goft/` — צִ׳י גֹפְת (Tehrani Persian)
+- `ta-di-koi/` — טָה דִי קְוָוא (Parisian French)
 
 Static site served by GitHub Pages. Visit and usage counts go to GoatCounter (`ilaylevi.goatcounter.com`).
