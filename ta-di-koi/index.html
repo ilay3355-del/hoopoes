@@ -1133,7 +1133,7 @@ let scrim = null;
 function openArchive() {
   $("#archive").classList.add("open"); $("#btnArchive").setAttribute("aria-expanded", "true");
   if (scrim && scrim.isConnected) return;
-  scrim = document.createElement("div"); scrim.className = "scrim"; scrim.addEventListener("click", closeArchive); document.body.appendChild(scrim);
+  scrim = document.createElement("div"); scrim.className = "scrim"; scrim.addEventListener("click", closeArchive); (document.querySelector(".app") || document.body).appendChild(scrim);
 }
 function closeArchive() {
   $("#archive").classList.remove("open"); $("#btnArchive").setAttribute("aria-expanded", "false");
